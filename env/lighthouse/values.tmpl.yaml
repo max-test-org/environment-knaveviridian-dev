@@ -1,0 +1,59 @@
+{{- if eq .Requirements.webhook "lighthouse" }}
+enabled: true
+{{- else }}
+enabled: false
+{{- end }}
+
+hmacToken: "{{ .Parameters.prow.hmacToken }}"
+
+git:
+  kind: {{ .Requirements.cluster.gitKind | default "github" }}
+  name: {{ .Requirements.cluster.gitName | default "github" }}
+  server: {{ .Requirements.cluster.gitServer | default "https://github.com" }}
+
+webhooks:
+  replicaCount: 2
+  service:
+    name: hook
+  
+{{- if .Requirements.githubApp.enabled }}
+# deprecated
+tide:
+  githubApp:
+    enabled: true
+
+githubApp:
+  enabled: true
+  username: "{{ .Parameters.pipelineUser.username }}"
+{{- end }}
+
+image:
+  # Deprecated in favor of image.parentRepository but retained for backwards compatibility with old value.
+  repository: gcr.io/jenkinsxio/lighthouse
+  parentRepository: gcr.io/jenkinsxio
+
+# Deprecated in favor of webhooks.replicaCount and webhooks.service
+replicaCount: 2
+service:
+  name: hook
+
+vault:
+{{- if eq .Requirements.secretStorage "vault" }}
+  enabled: true
+{{- else }}
+  enabled: false
+{{- end }}
+
+clusterName: {{ .Requirements.cluster.clusterName }}
+
+user: "{{ .Parameters.pipelineUser.username }}"
+
+oauthToken: "{{ .Parameters.pipelineUser.token }}"
+
+logFormat: "stackdriver"
+
+env:
+{{- if hasKey .Parameters "dashboardUrl" }}  
+  LIGHTHOUSE_REPORT_URL_BASE: "{{ .Parameters.dashboardUrl }}/jenkinsx"
+  LIGHTHOUSE_REPORT_URL_TEAM: "cbjx-{{ .Requirements.cluster.clusterName }}"
+{{- end }}
