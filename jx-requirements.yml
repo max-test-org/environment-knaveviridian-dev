@@ -1,40 +1,105 @@
 autoUpdate:
   enabled: true
-  schedule: '0 0 * * *'
+  schedule: 0 0 * * *
+bootConfigURL: https://github.com/cloudbees/arcalos-boot-config.git
 cluster:
-  clusterName: ""
-  environmentGitOwner: ""
-  project: ""
+  azure: {}
+  chartRepository: http://bucketrepo/bucketrepo/charts/
+  clusterName: knaveviridian
+  environmentGitOwner: max-test-org
+  environmentGitPublic: true
+  externalDNSSAName: knaveviridian-dn
+  gitKind: github
+  gitName: github
+  gitPublic: true
+  gitServer: https://github.com
+  gke:
+    projectNumber: "574267142526"
+  kanikoSAName: knaveviridian-ko
+  namespace: jx
+  project: cbjx-knaveviridian
   provider: gke
-  zone: ""
-gitops: true
-githubApp:
-  enabled: false
-  url: ""
-  schedule: '0 0 * * *'
+  registry: gcr.io
+  vaultName: knaveviridian
+  vaultSAName: knaveviridian-vt
+  zone: us-central1-c
 environments:
-- key: dev
-- key: staging
-- key: production
+- ingress:
+    cloud_dns_secret_name: external-dns-gcp-sa
+    domain: cbjx-knaveviridian.play-jxaas.live
+    domainIssuerURL: https://jx-tenant-service-jx.mgmt.play-jxaas.live
+    externalDNS: true
+    namespaceSubDomain: -jx.
+    tls:
+      email: jenkins-x@cloudbees.com
+      enabled: true
+      production: false
+  key: dev
+  repository: environment-knaveviridian-dev
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: staging
+  repository: environment-knaveviridian-staging
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: production
+  repository: environment-knaveviridian-production
+githubApp:
+  enabled: true
+  schedule: 0 0 * * *
+  url: https://lighthouse-githubapp-jx.mgmt.play-jxaas.live
+gitops: true
 ingress:
-  domain: ""
+  cloud_dns_secret_name: external-dns-gcp-sa
+  domain: cbjx-knaveviridian.play-jxaas.live
+  domainIssuerURL: https://jx-tenant-service-jx.mgmt.play-jxaas.live
   externalDNS: true
+  namespaceSubDomain: -jx.
   tls:
     email: jenkins-x@cloudbees.com
     enabled: true
     production: false
 kaniko: true
+repository: bucketrepo
 secretStorage: vault
 storage:
+  backup:
+    enabled: true
+    url: gs://cbjx-knaveviridian-backup
   logs:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-knaveviridian-lts
   reports:
     enabled: false
     url: ""
   repository:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-knaveviridian-repository
+vault:
+  aws: {}
+  bucket: cbjx-knaveviridian-vault
+  key: knaveviridian-c7caa95b92d4-crypto-key
+  keyring: knaveviridian-c7caa95b92d4-keyring
+  name: knaveviridian
+  serviceAccount: knaveviridian-vt
 velero:
   namespace: velero
-webhook: prow
+  schedule: ""
+  serviceAccount: knaveviridian-vo
+  ttl: ""
+versionStream:
+  ref: v0.0.435
+  url: https://github.com/cloudbees/arcalos-jenkins-x-versions.git
+webhook: lighthouse

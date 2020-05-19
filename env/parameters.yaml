@@ -1,0 +1,12 @@
+adminUser:
+  password: vault:knaveviridian/adminUser:password
+  username: admin
+dashboardUrl: https://dashboard.play-jxaas.live
+enableDocker: false
+pipelineUser:
+  email: arcalos-admin@googlegroups.com
+  token: vault:knaveviridian/pipelineUser:token
+  username: cloudbees-ci-cd-play[bot]
+prow:
+  hmacToken: vault:knaveviridian/prow:hmacToken
+segmentWriteKey: vault:knaveviridian:segmentWriteKey
